@@ -303,6 +303,7 @@ let currentPart = null;
 const mats = {};
 let camGoal = null, tgtGoal = null;   // smooth camera move (e.g. to the name board)
 let homeCamPos = null, homeTarget = null;   // the default framed view
+let fh = null;   // {d,h} from frameHouse, for the quick-view buttons
 let loadedStyle = null, applyingPalette = false;
 const storyCache = {}, nameCache = {};   // remember plaque text per style across switches
 let signMeshes = [];       // the model's own gold sign meshes (hidden when custom text set)
@@ -476,8 +477,57 @@ function frameHouse(){
   controls.minDistance = d*0.4; controls.maxDistance = d*2.4;
   controls.target.set(0, h*0.45, 0); controls.update();
   homeCamPos = camera.position.clone(); homeTarget = controls.target.clone();
+  fh = { d, h };   // remembered so the quick-view buttons can pose the camera
 }
 function resetView(){ if (homeCamPos) { camGoal = homeCamPos.clone(); tgtGoal = homeTarget.clone(); } }
+
+// ---- quick views: glide the camera to a set angle (uses the same lerp the nudges do) ----
+function viewTo(azDeg, elDeg, distMul, tgtYMul){
+  if (!fh) return;
+  const az = THREE.MathUtils.degToRad(azDeg), el = THREE.MathUtils.degToRad(elDeg), d = fh.d * (distMul || 1);
+  camGoal = new THREE.Vector3(d*Math.cos(el)*Math.sin(az), d*Math.sin(el) + fh.h*0.35, d*Math.cos(el)*Math.cos(az));
+  tgtGoal = new THREE.Vector3(0, fh.h * (tgtYMul != null ? tgtYMul : 0.45), 0);
+  setSpin(false); requestRender();
+}
+const QUICK_VIEWS = [
+  { label: 'Front',   fn: () => viewTo(6, 10, 1.0) },
+  { label: 'Corner',  fn: () => resetView() },
+  { label: 'Side',    fn: () => viewTo(92, 12, 1.0) },
+  { label: 'Top',     fn: () => viewTo(28, 70, 1.05) },
+  { label: 'Inside',  fn: () => viewTo(34, 52, 0.72, 0.62) },   // peek down into the courtyard
+];
+let spinBtn = null;
+function setSpin(on){ if (!controls) return; controls.autoRotate = !!on; if (spinBtn) spinBtn.setAttribute('aria-pressed', on ? 'true' : 'false'); requestRender(); }
+function toggleSpin(){ setSpin(!controls.autoRotate); }
+// snapshot the current view onto a captioned card the buyer can save/share
+function saveImage(){
+  renderer.render(scene, camera);   // fresh frame in the buffer
+  const src = renderer.domElement;
+  const pad = Math.round(src.width * 0.05), capH = Math.round(src.width * 0.10);
+  const c = document.createElement('canvas'); c.width = src.width + pad*2; c.height = src.height + pad + capH;
+  const g = c.getContext('2d');
+  g.fillStyle = '#efece4'; g.fillRect(0, 0, c.width, c.height);
+  g.drawImage(src, pad, pad);
+  const name = (recipe.story && recipe.story.title) ? recipe.story.title : 'Your design';
+  g.textAlign = 'center';
+  g.fillStyle = '#221e18'; g.font = '600 ' + Math.round(capH*0.34) + 'px Georgia, serif';
+  g.fillText(name, c.width/2, src.height + pad + capH*0.46);
+  g.fillStyle = '#8a8578'; g.font = Math.round(capH*0.22) + 'px -apple-system, Helvetica, Arial, sans-serif';
+  g.fillText('Nanyang Model Co.  ·  design your own', c.width/2, src.height + pad + capH*0.80);
+  const a = document.createElement('a');
+  a.href = c.toDataURL('image/png');
+  a.download = (name.replace(/[^a-z0-9]+/ig, '-').replace(/^-|-$/g, '') || 'nanyang-design') + '.png';
+  a.click();
+}
+function buildViewBar(mount){
+  const bar = el('div', 'viewbar');
+  QUICK_VIEWS.forEach(v => { const b = el('button', 'vbtn', v.label); b.type = 'button'; b.addEventListener('click', v.fn); bar.appendChild(b); });
+  const sep = el('span', 'vsep'); bar.appendChild(sep);
+  spinBtn = el('button', 'vbtn vspin', 'Spin'); spinBtn.type = 'button'; spinBtn.setAttribute('aria-pressed', 'false');
+  spinBtn.addEventListener('click', toggleSpin); bar.appendChild(spinBtn);
+  const save = el('button', 'vbtn vsave', 'Save image'); save.type = 'button'; save.addEventListener('click', saveImage); bar.appendChild(save);
+  mount.appendChild(bar);
+}
 
 // ---- 3D raised lettering, so custom text looks MOLDED like the real plaque (not a flat drawing) ----
 const PLAQUE_FONT_URL = 'https://cdn.jsdelivr.net/npm/three@0.160.1/examples/fonts/gentilis_regular.typeface.json';
@@ -836,7 +886,7 @@ function init(){
   const rect = mount.getBoundingClientRect();
   camera = new THREE.PerspectiveCamera(38, rect.width / rect.height, 0.3, 100);
   camera.position.set(5.6, 3.5, 7.6);
-  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });   // keep the buffer so "Save image" can read it
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));   // cap fill-rate on high-density phones
   renderer.setSize(rect.width, rect.height);
   renderer.setClearColor(0x000000, 0);   // transparent, so the paper gradient behind shows through
@@ -865,10 +915,12 @@ function init(){
   controls.minDistance = 2.6; controls.maxDistance = 16;
   controls.minPolarAngle = 0.2; controls.maxPolarAngle = Math.PI / 2 - 0.02;
   controls.target.set(0, 2, 0); controls.update();
-  controls.addEventListener('start', () => { camGoal = null; tgtGoal = null; });  // user drag cancels the nudge
+  controls.autoRotate = false; controls.autoRotateSpeed = 0.8;
+  controls.addEventListener('start', () => { camGoal = null; tgtGoal = null; setSpin(false); });  // user drag takes over: cancel the glide + stop the turntable
   controls.addEventListener('change', requestRender);   // redraw on any camera move (drag, zoom)
   addEventListener('resize', onResize);
   window.__cam = camera; window.__ctl = controls; window.__renderer = renderer; window.__scene = scene; window.__THREE = THREE; window.__house = null;
+  buildViewBar(mount);
   animate();
   loadModel('colonial');
 }

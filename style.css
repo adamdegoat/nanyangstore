@@ -176,6 +176,22 @@ main{padding:0 var(--pad)}
 .field-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
 .field-label{font-family:var(--text);font-style:italic;color:var(--ink-soft);font-size:13px}
 .field-count{font-family:var(--disp);font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft);opacity:.7}
+/* quick-view toolbar over the 3D stage */
+.viewbar{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:3;
+  display:flex;flex-wrap:nowrap;justify-content:center;align-items:center;gap:2px 4px;width:max-content;
+  padding:5px 8px;background:rgba(247,245,239,.86);border:1px solid var(--line);border-radius:999px;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);max-width:calc(100% - 24px)}
+.vbtn{font-family:var(--disp);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-soft);background:none;border:none;border-radius:999px;padding:6px 10px;min-height:32px;cursor:pointer;white-space:nowrap}
+.vbtn:hover{color:var(--ink)}
+.vbtn[aria-pressed="true"]{color:var(--seal)}
+.vsep{width:1px;align-self:stretch;margin:4px 3px;background:var(--line)}
+.vsave{color:var(--seal)}
+.vbtn:focus-visible{outline:2px solid var(--seal);outline-offset:1px}
+@media(max-width:640px){.viewbar{top:8px;gap:0 2px;padding:4px 6px;width:auto;max-width:calc(100% - 16px);
+  overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;justify-content:flex-start}
+  .viewbar::-webkit-scrollbar{display:none}
+  .vbtn{font-size:10.5px;padding:7px 8px;min-height:36px;letter-spacing:.06em;flex:0 0 auto}}
 .drag-hint{position:absolute;left:0;right:0;bottom:14px;text-align:center;pointer-events:none;
   font-family:var(--disp);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);opacity:.7;z-index:2}
 .stage-hint{display:flex;flex-direction:column;align-items:center;gap:12px}
