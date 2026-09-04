@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Order · Nanyang Model Co.</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..460&family=Noto+Serif+SC:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=66">
+<style>
+  .order-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:22px;flex-wrap:wrap;gap:8px}
+  .order-style{font-family:var(--disp);font-size:28px}
+  .order-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  @media(max-width:680px){.order-grid{grid-template-columns:1fr}}
+  .ofield{margin-bottom:14px}
+  .ofield .k{font-family:var(--disp);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);display:block;margin-bottom:3px}
+  .ofield .v{font-size:18px}
+  .citem{padding:9px 0;border-bottom:1px solid var(--line-soft)}
+  .cplate{font-family:var(--disp);font-size:13px;letter-spacing:.03em;color:var(--ink-soft)}
+  .cload{font-size:17px;color:var(--ink);margin-top:2px}
+  .csw{width:26px;height:26px;border:1px solid var(--line);flex:0 0 auto}
+  .cmeta{flex:1;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .cname{color:var(--ink)}
+  .chex{color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .cgroup{font-family:var(--disp);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin:18px 0 4px}
+  .empty{padding:60px 0;text-align:center;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+<header class="masthead">
+  <a class="brand" href="index.html" aria-label="Nanyang Model Co.">
+    <img class="mk" src="assets/brand/mark.svg" alt="">
+    <span class="wm">
+      <span class="wm-en">Nanyang<br>Model Co.</span>
+      <span class="wm-cn"><span class="cn">南洋模型</span><span class="sgp">Singapore</span></span>
+    </span>
+  </a>
+  <button class="navtoggle" aria-label="Menu" aria-expanded="false" onclick="var m=this.closest('.masthead');var o=m.classList.toggle('open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
+  <nav class="tabs"><span class="label">Order sheet</span></nav>
+</header>
+<main>
+  <div class="wrap">
+    <div id="order"><p class="empty">Open an order link to see the design.</p></div>
+  </div>
+</main>
+<footer><span>Nanyang Model Co. &middot; Order sheet</span><span class="label">Internal</span></footer>
+<script>
+  function esc(s){ return (s==null?'':String(s)).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+  // his real print plates per house (from plates.json / bands.json) — so the order reads plate by plate
+  const PLATES = {"colonial":[{"n":1,"t":"Grey","s":["ASH GRAY"]},{"n":2,"t":"White shell and fence","s":["IVORY"]},{"n":3,"t":"Windows","s":["IVORY","CHARCOAL"]},{"n":4,"t":"Fence lattice","s":["CHARCOAL"]},{"n":5,"t":"Brown joinery and floors","s":["CHARCOAL","DARK BROWN"]},{"n":6,"t":"Tiled floors","s":["IVORY","CHARCOAL"]},{"n":7,"t":"Roofs","s":["TERRACOTTA"]},{"n":8,"t":"Charcoal","s":["CHARCOAL"]},{"n":9,"t":"Museum board","s":["CHARCOAL","IVORY"]},{"n":10,"t":"Name board","s":["CHARCOAL","BASIC GOLD"]},{"n":11,"t":"Facade front","s":["IVORY","CHARCOAL"]},{"n":12,"t":"Facade west flank","s":["IVORY","CHARCOAL"]}],"chinese":[{"n":1,"t":"Grey","s":["ASH GRAY"]},{"n":2,"t":"White shell and fence","s":["IVORY"]},{"n":3,"t":"Windows","s":["CHARCOAL","DARK GREEN"]},{"n":4,"t":"Fence lattice","s":["DARK GREEN"]},{"n":5,"t":"Pier panels","s":["IVORY","DARK GREEN"]},{"n":6,"t":"Brown joinery and floors","s":["DARK BROWN"]},{"n":7,"t":"Tiled floors","s":["IVORY","TERRACOTTA","DARK GREEN"]},{"n":8,"t":"Roofs","s":["CHARCOAL"]},{"n":9,"t":"Charcoal","s":["CHARCOAL"]},{"n":10,"t":"Museum board","s":["IVORY","SCARLET"]},{"n":11,"t":"Name board","s":["BASIC GOLD","CHARCOAL"]},{"n":12,"t":"Facade front","s":["IVORY","DARK GREEN","MANDARIN","SCARLET"]},{"n":13,"t":"Facade west flank","s":["IVORY","DARK GREEN","SCARLET","MANDARIN"]}],"peranakan":[{"n":1,"t":"Grey","s":["ASH GREY"]},{"n":2,"t":"White shell + fence","s":["IVORY"]},{"n":3,"t":"Roofs","s":["TERRACOTTA"]},{"n":4,"t":"Green pieces","s":["PINE GREEN"]},{"n":5,"t":"Tiled floors","s":["IVORY","PINE GREEN","TERRACOTTA"]},{"n":6,"t":"Brown floors and ceilings","s":["DARK BROWN"]},{"n":7,"t":"Facade plates","s":["TERRACOTTA","IVORY"]},{"n":8,"t":"West flank plates","s":["TERRACOTTA","IVORY"]},{"n":9,"t":"Green units","s":["CHARCOAL","PINE GREEN"]},{"n":10,"t":"Brown units","s":["DARK BROWN"]},{"n":11,"t":"Charcoal pieces","s":["CHARCOAL"]},{"n":12,"t":"Eave valance","s":["PINE GREEN","IVORY"]},{"n":13,"t":"Museum board","s":["TERRACOTTA","IVORY"]},{"n":14,"t":"Name board","s":["DARK BROWN","IVORY"]}]};
+  const normSpool = s => (s||'').toUpperCase().replace('PINE GREEN','GREEN').replace('DARK GREEN','GREEN').replace('BASIC GOLD','GOLD').replace('ASH GREY','ASH GRAY');
+  function decode(){
+    const code = location.hash.slice(1); if (!code) return null;
+    try { return JSON.parse(decodeURIComponent(escape(atob(code)))); } catch (e) { return null; }
+  }
+  function field(k, v){ return v ? `<div class="ofield"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>` : ''; }
+  function fieldML(k, v){ return v ? `<div class="ofield"><span class="k">${esc(k)}</span><span class="v" style="white-space:pre-line">${esc(v)}</span></div>` : ''; }
+  function render(o){
+    const root = document.getElementById('order');
+    if (!o) { root.innerHTML = '<p class="empty">Could not read this order link.</p>'; return; }
+    const byS = {}; (o.colours || []).forEach(c => { byS[normSpool(c.spool)] = c; });
+    const plates = PLATES[o.styleKey] || [];
+    let cols = '';
+    plates.forEach(p => {
+      const loads = p.s.map(sp => { const c = byS[normSpool(sp)]; return c ? c.name : sp; });
+      cols += `<div class="citem"><div class="cplate">${esc(p.n)} &middot; ${esc(p.t)}</div>`
+        + `<div class="cload">${loads.map(esc).join(' &middot; ')}</div></div>`;
+    });
+    if (!plates.length) (o.colours || []).forEach(c => { cols += `<div class="citem"><div class="cplate">${esc(c.part||'')}</div><div class="cload">${esc(c.name)}</div></div>`; });
+    root.innerHTML = `
+      <div class="order-head">
+        <span class="order-style">${esc(o.style)} terrace</span>
+        <span class="label">$168 &middot; PayNow on confirm</span>
+      </div>
+      <div class="order-grid">
+        <div>
+          <div class="cgroup" style="margin-top:0">Customer</div>
+          ${field('Name', o.customerName) || '<div class="ofield"><span class="k">Name</span><span class="v" style="color:var(--ink-soft)">(from WhatsApp)</span></div>'}
+          ${field('Contact', o.contact)}
+          <div class="cgroup">Plaque</div>
+          ${field('House name', o.houseName)}
+          ${field('Subtitle', o.subtitle)}
+          ${field('Year / place', o.place)}
+          ${fieldML('Story', o.story)}
+          ${field('Name board', o.nameBoard)}
+          ${field('Made for', o.madeFor)}
+        </div>
+        <div>
+          <div class="cgroup" style="margin-top:0">Plates to print (load these filaments)</div>
+          ${cols || '<p class="note">No colour data.</p>'}
+        </div>
+      </div>`;
+  }
+  render(decode());
+  addEventListener('hashchange', () => render(decode()));
+</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nanyang Model Co.</title>
+<meta name="description" content="Model houses of Singapore's terraces, designed in-house and assembled by hand.">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..460&family=Noto+Serif+SC:wght@500;600&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add("js")</script>
+<link rel="stylesheet" href="style.css?v=66">
+</head>
+<body>
+<header class="masthead">
+  <a class="brand" href="index.html" aria-label="Nanyang Model Co.">
+    <img class="mk" src="assets/brand/mark.svg" alt="">
+    <span class="wm">
+      <span class="wm-en">Nanyang<br>Model Co.</span>
+      <span class="wm-cn"><span class="cn">南洋模型</span><span class="sgp">Singapore</span></span>
+    </span>
+  </a>
+  <button class="navtoggle" aria-label="Menu" aria-expanded="false" onclick="var m=this.closest('.masthead');var o=m.classList.toggle('open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
+  <nav class="tabs">
+    <a href="index.html" aria-current="page">Shop</a>
+    <a href="design.html">Design Your Own</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="lede rise">
+      <div>
+        <span class="label kicker">Designed in-house &middot; Assembled by hand</span>
+        <h1>Model houses of the terraces this island grew up in.</h1>
+      </div>
+      <p class="sub">Designed in our studio and assembled by hand. One price, islandwide delivery included.</p>
+    </section>
+
+    <ul class="proof">
+      <li>Numbered and boxed</li>
+      <li>Made to order in Singapore</li>
+      <li>Islandwide delivery included</li>
+    </ul>
+
+    <section class="grid">
+      <a class="card rise" href="house-04.html">
+        <span class="frame"><img src="assets/houses/no04_shop.png?v=3" alt="The Shutter House model"></span>
+        <span class="meta">
+          <span class="mtext">
+            <span class="no label">No. 04</span>
+            <span class="name">The Shutter House</span>
+            <span class="desc">Black-and-white terrace</span>
+          </span>
+          <span class="price">$138</span>
+        </span>
+      </a>
+      <a class="card rise" href="house-05.html">
+        <span class="frame"><img src="assets/houses/no05_shop.png?v=3" alt="The Fortune House model"></span>
+        <span class="meta">
+          <span class="mtext">
+            <span class="no label">No. 05</span>
+            <span class="name">The Fortune House</span>
+            <span class="desc">Ornamented shophouse terrace</span>
+          </span>
+          <span class="price">$138</span>
+        </span>
+      </a>
+      <a class="card rise" href="house-06.html">
+        <span class="frame"><img src="assets/houses/no06_shop.png?v=3" alt="The Peranakan House model"></span>
+        <span class="meta">
+          <span class="mtext">
+            <span class="no label">No. 06</span>
+            <span class="name">The Peranakan House</span>
+            <span class="desc">Ornamented Peranakan shophouse</span>
+          </span>
+          <span class="price">$138</span>
+        </span>
+      </a>
+    </section>
+
+    <section class="designstrip">
+      <div class="ds-text">
+        <span class="label kicker">Make it yours</span>
+        <h2>Design your own house.</h2>
+        <p>Pick a style, choose the colours from the very filaments we print, and add your house name. Turn it to see every side, then send it to us to build.</p>
+      </div>
+      <a class="btn" href="design.html">Start designing</a>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <span>Nanyang Model Co. &middot; Made in Singapore</span>
+  <span class="label">A maker's chop</span>
+</footer>
+
+<script>
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+  document.querySelectorAll('.rise').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

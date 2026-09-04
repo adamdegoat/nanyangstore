@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Nanyang Model Co.">
+  <rect x="5" y="5" width="90" height="90" rx="11" fill="#A5382A"/>
+  <g transform="translate(0,-5)" fill="none" stroke="#F1E9DA" stroke-width="6.2" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M27 53 L50 35 L73 53"/><path d="M23 53 L77 53"/>
+    <path d="M39 78 L39 64 Q50 55 61 64 L61 78"/>
+  </g>
+</svg>

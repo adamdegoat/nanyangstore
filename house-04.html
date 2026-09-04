@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Shutter House · Nanyang Model Co.</title>
+<meta name="description" content="No. 04, The Shutter House. A 1:75 model of a Singapore black-and-white terrace, designed in-house and assembled by hand.">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..460&family=Noto+Serif+SC:wght@500;600&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add("js")</script>
+<link rel="stylesheet" href="style.css?v=66">
+</head>
+<body>
+<header class="masthead">
+  <a class="brand" href="index.html" aria-label="Nanyang Model Co.">
+    <img class="mk" src="assets/brand/mark.svg" alt="">
+    <span class="wm">
+      <span class="wm-en">Nanyang<br>Model Co.</span>
+      <span class="wm-cn"><span class="cn">南洋模型</span><span class="sgp">Singapore</span></span>
+    </span>
+  </a>
+  <button class="navtoggle" aria-label="Menu" aria-expanded="false" onclick="var m=this.closest('.masthead');var o=m.classList.toggle('open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
+  <nav class="tabs">
+    <a href="index.html" aria-current="page">Shop</a>
+    <a href="design.html">Design Your Own</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="pdp">
+      <div class="gallery rise">
+        <div class="hero"><img id="hero" src="assets/houses/no04_iso.png?v=3" alt="The Shutter House, angled view"></div>
+        <div class="thumbs">
+          <span class="t" aria-current="true"><img src="assets/houses/no04_iso.png?v=3" alt="Angled view" onclick="hero.src=this.src"></span>
+          <span class="t"><img src="assets/houses/no04_front.png?v=3" alt="Front view" onclick="hero.src=this.src"></span>
+        </div>
+      </div>
+
+      <div class="buy rise">
+        <div class="no label">No. 04</div>
+        <h1>The Shutter House</h1>
+        <p class="story">A black-and-white terrace of the kind built along Singapore's older streets: timber shutters over the windows, a five-foot way at the front, deep eaves against the sun. Designed in our studio and assembled by hand at 1:75, then numbered on its base.</p>
+
+        <div class="price">$138 <small>One price. Islandwide delivery included.</small></div>
+        <a class="btn" href="https://wa.me/6583219747?text=Hi%20Nanyang%20Model%20Co.%2C%20I%27d%20like%20to%20order%20The%20Shutter%20House%20(No.%2004)%20-%20%24138." target="_blank" rel="noopener">Order this house</a>
+
+        <div class="facts">
+          <dl>
+            <dt class="label">Size</dt><dd>About 8 &times; 24 &times; 13 cm (width &times; depth &times; height)</dd>
+            <dt class="label">Scale</dt><dd>1:75, roughly a hand-and-a-half wide</dd>
+            <dt class="label">Made</dt><dd>Designed in-house, assembled by hand in Singapore</dd>
+            <dt class="label">Finish</dt><dd>Matte, on a numbered base</dd>
+            <dt class="label">Ready in</dt><dd>About 3 to 7 days</dd>
+            <dt class="label">Payment</dt><dd>PayNow, once we confirm your order by message</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <span>Nanyang Model Co. &middot; Made in Singapore</span>
+  <span class="label">A maker's chop</span>
+</footer>
+
+<script>
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+  document.querySelectorAll('.rise').forEach(el=>io.observe(el));
+  document.querySelectorAll('.thumbs .t').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.thumbs .t').forEach(x=>x.removeAttribute('aria-current'));t.setAttribute('aria-current','true')}));
+</script>
+</body>
+</html>

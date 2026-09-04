@@ -1,0 +1,8 @@
+# internal / dev only — not part of the public site
+logo-ideas.html
+logo-3.html
+serve.py
+CUSTOMIZER.md
+assets/houses/_orig/
+.DS_Store
+.playwright-mcp/

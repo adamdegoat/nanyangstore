@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>About · Nanyang Model Co.</title>
+<meta name="description" content="Who makes the models, and how ordering works.">
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..460&family=Noto+Serif+SC:wght@500;600&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add("js")</script>
+<link rel="stylesheet" href="style.css?v=66">
+</head>
+<body>
+<header class="masthead">
+  <a class="brand" href="index.html" aria-label="Nanyang Model Co.">
+    <img class="mk" src="assets/brand/mark.svg" alt="">
+    <span class="wm">
+      <span class="wm-en">Nanyang<br>Model Co.</span>
+      <span class="wm-cn"><span class="cn">南洋模型</span><span class="sgp">Singapore</span></span>
+    </span>
+  </a>
+  <button class="navtoggle" aria-label="Menu" aria-expanded="false" onclick="var m=this.closest('.masthead');var o=m.classList.toggle('open');this.setAttribute('aria-expanded',o)"><span></span><span></span><span></span></button>
+  <nav class="tabs">
+    <a href="index.html">Shop</a>
+    <a href="design.html">Design Your Own</a>
+    <a href="about.html" aria-current="page">About</a>
+  </nav>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="about rise">
+      <div class="about-text">
+        <span class="label kicker">About</span>
+        <h1>Made by hand, in Singapore.</h1>
+        <p>Nanyang Model Co. is a studio that keeps the Singapore we grew up around, the terraces and shophouses and the quiet corners that are slowly going, as objects made to last. Everything is designed in our own studio and finished by hand here, then numbered and boxed.</p>
+
+        <p>The model houses are where the studio begins. The idea behind them, the places that built this city made properly, is one we plan to keep making in new forms and larger works.</p>
+
+        <h2>How ordering works</h2>
+        <p>Pick a house, or design your own. Tell us where it should go, and we confirm the details and a delivery date by message. You pay by PayNow, and we build and deliver it. Because each one is made to order, allow about 3 to 7 days.</p>
+
+        <h2>One honest price</h2>
+        <p>Ready-made houses are $138. A house you design yourself is $168. Islandwide delivery is included, and there are no surprises at the end.</p>
+      </div>
+      <figure class="about-fig">
+        <img src="assets/houses/no06_photo_angle.jpg" alt="A finished Peranakan model house, assembled by hand">
+        <figcaption class="label">No. 06 &middot; assembled by hand</figcaption>
+      </figure>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <span>Nanyang Model Co. &middot; Made in Singapore</span>
+  <span class="label">A maker's chop</span>
+</footer>
+
+<script>
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+  document.querySelectorAll('.rise').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
