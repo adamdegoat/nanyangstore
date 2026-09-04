@@ -268,6 +268,7 @@ main{padding:0 var(--pad)}
 .about-text h1{font-size:clamp(28px,3.6vw,42px);margin:0 0 26px;max-width:16ch;line-height:1.15}
 .about-text p{color:var(--ink-soft);margin:0 0 20px;font-size:18px;max-width:46ch}
 .about-text h2{font-family:var(--disp);font-size:24px;margin:46px 0 14px}
+.craftline{margin-top:34px !important;color:var(--ink-soft);font-size:12px;letter-spacing:.12em}
 .about-fig{margin:0;position:sticky;top:24px}
 .about-fig img{width:100%;display:block;border:1px solid var(--line)}
 .about-fig figcaption{margin-top:12px;color:var(--ink-soft)}
