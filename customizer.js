@@ -915,7 +915,7 @@ function init(){
   controls.minDistance = 2.6; controls.maxDistance = 16;
   controls.minPolarAngle = 0.2; controls.maxPolarAngle = Math.PI / 2 - 0.02;
   controls.target.set(0, 2, 0); controls.update();
-  controls.autoRotate = false; controls.autoRotateSpeed = 0.8;
+  controls.autoRotate = false; controls.autoRotateSpeed = 2.6;   // ~23s per turn (time-based, see animate)
   controls.addEventListener('start', () => { camGoal = null; tgtGoal = null; setSpin(false); });  // user drag takes over: cancel the glide + stop the turntable
   controls.addEventListener('change', requestRender);   // redraw on any camera move (drag, zoom)
   addEventListener('resize', onResize);
@@ -931,15 +931,17 @@ function onResize(){
   renderer.setSize(r.width, r.height);
   requestRender();
 }
+const _clock = new THREE.Clock();
 function animate(){
   requestAnimationFrame(animate);
+  const dt = _clock.getDelta();   // real seconds; keeps the turntable the same pace on any device
   let changed = false;
   if (camGoal) {
     camera.position.lerp(camGoal, 0.12); controls.target.lerp(tgtGoal, 0.12);
     if (camera.position.distanceTo(camGoal) < 0.05) { camGoal = null; tgtGoal = null; }
     changed = true;
   }
-  if (controls.update()) changed = true;   // true while dragging / damping still settling
+  if (controls.update(dt)) changed = true;   // true while dragging / damping / auto-rotating
   if (changed || needsRender) { renderer.render(scene, camera); needsRender = false; }
 }
 function focusOn(mesh, dist){
