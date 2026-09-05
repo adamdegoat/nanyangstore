@@ -341,7 +341,7 @@ async function loadModel(styleKey){
   const style = STYLES.find(s => s.key === styleKey); if (!style) return;
   if (hint) hint.textContent = 'Loading ' + style.label + '…';
   try {
-    const data = await fetch('assets/models/' + style.file + '?v=95').then(r => r.json());
+    const data = await fetch('assets/models/' + style.file + '?v=96').then(r => r.json());
     if (loadedStyle && loadedStyle !== styleKey) {   // remember the outgoing style's text AND colours
       storyCache[loadedStyle] = Object.assign({}, recipe.story);
       nameCache[loadedStyle] = recipe.plaque.text;
