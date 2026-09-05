@@ -200,7 +200,7 @@ function peranakanSlot(name, stage, hex){
   if (n.includes('lattice'))       return { section: 'Outside', group: 'Fence', slot: 'Lattice' };
   if (n.includes('fence gate') || n.includes('finial')) return { section: 'Outside', group: 'Fence', slot: 'Gate & finial' };
   if (n.includes('facade') && !light) return { section: 'Outside', group: 'Facade accent', slot: 'Colour' };
-  if (n === 'base' || n.startsWith('base ')) return { section: 'Outside', group: 'Base', slot: 'Colour' };
+  if (n === 'base' || n.startsWith('base ')) return { locked: true };   // base FIXED ash grey, not customer-changeable (his call 2026-09-05)
   return { section: 'Outside', group: 'Walls', slot: 'Colour' };   // everything ivory left: walls, posts, roof edge, facade base
 }
 // COLONIAL (No.04) & the classic-structure houses. Older piece naming (stages: Windows and doors,
@@ -214,7 +214,7 @@ function classicSlot(name, stage, hex){
   if (n.includes('ceiling'))      return { section: 'Floors & ceilings', group: 'Ceilings', slot: 'Colour' };
   if (stage === 'Base') {
     if (n.includes('forecourt')) return { section: 'Floors & ceilings', group: 'Courtyard', slot: light ? 'Base' : 'Pattern' };
-    return { section: 'Outside', group: 'Base', slot: 'Colour' };
+    return { locked: true };   // base FIXED ash grey, not customer-changeable (his call 2026-09-05)
   }
   if (stage === 'Floors') {
     // the verandah STRIP at the door is the chequer, hall-coloured - it follows the Halls, not the open courtyard (his call 2026-09-05)
@@ -341,7 +341,7 @@ async function loadModel(styleKey){
   const style = STYLES.find(s => s.key === styleKey); if (!style) return;
   if (hint) hint.textContent = 'Loading ' + style.label + '…';
   try {
-    const data = await fetch('assets/models/' + style.file + '?v=92').then(r => r.json());
+    const data = await fetch('assets/models/' + style.file + '?v=93').then(r => r.json());
     if (loadedStyle && loadedStyle !== styleKey) {   // remember the outgoing style's text AND colours
       storyCache[loadedStyle] = Object.assign({}, recipe.story);
       nameCache[loadedStyle] = recipe.plaque.text;
