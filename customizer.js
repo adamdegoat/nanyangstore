@@ -108,7 +108,7 @@ const INTERIOR_PARTS = ['Ceilings', 'Floor'];
 // Section + group order for the explicit per-house maps
 const SECTION_ORDER = ['Outside', 'Floors & ceilings', 'Plaques', 'Outside colours', 'Inside colours'];
 const GROUP_ORDER = ['Walls', 'Facade accent', 'Roof', 'Windows', 'Doors & arches', 'Fence', 'Base',
-  'Veranda & courtyard', 'Halls', 'Service floors', 'Upstairs rooms', 'Ceilings',
+  'Veranda & courtyard', 'Courtyard', 'Halls', 'Service floors', 'Upstairs rooms', 'Ceilings',
   'Name board', 'Museum plaque', 'Shop sign'];
 // COLOUR PICKERS = his real print spools (one filament per role). Each picker sets EVERY part of that
 // colour together, exactly how a spool covers the whole house, so any order maps 1:1 to the plates.
@@ -137,7 +137,7 @@ const ROLE_SPOOL = {
 const SPOOL_PRINT_ORDER = ['ASH GRAY', 'IVORY', 'CHARCOAL', 'DARK BROWN', 'GREEN', 'TERRACOTTA', 'MANDARIN', 'SCARLET', 'GOLD'];
 // name a spool by the most prominent real part it covers (per house, so it's never a wrong guess)
 const LABEL_PRIORITY = ['Walls', 'Roof', 'Windows', 'Doors & arches', 'Facade accent', 'Fence', 'Base',
-  'Veranda & courtyard', 'Halls', 'Service floors', 'Upstairs rooms', 'Ceilings', 'Museum plaque', 'Name board', 'Shop sign'];
+  'Veranda & courtyard', 'Courtyard', 'Halls', 'Service floors', 'Upstairs rooms', 'Ceilings', 'Museum plaque', 'Name board', 'Shop sign'];
 // cluster the model's parts by their spool colour -> one picker per spool
 function roleGroups(){
   const by = {}, order = [];
@@ -177,8 +177,11 @@ function peranakanSlot(name, stage, hex){
   if (n.includes('name board'))  return { section: 'Plaques', group: 'Name board',   slot: light ? 'Lettering' : 'Board' };   // ivory = raised lettering, dark = board base
   if (n.includes('museum'))      return { section: 'Plaques', group: 'Museum plaque', slot: light ? 'Lettering' : 'Plaque' };
   if (n.includes('sign board'))  return { section: 'Plaques', group: 'Shop sign',     slot: light ? 'Lettering' : 'Sign' };
-  if (n.includes('forecourt') || n.includes('floor porch') || n.includes('air-well'))
-    return { section: 'Floors & ceilings', group: 'Veranda & courtyard', slot: light ? 'Base' : 'Pattern' };
+  // the verandah STRIP at the door follows the halls (his call 2026-09-05) - it is the hall chequer now, not the open courtyard
+  if (n.includes('floor porch'))
+    return { section: 'Floors & ceilings', group: 'Halls', slot: light ? 'Base' : 'Pattern' };
+  if (n.includes('forecourt') || n.includes('air-well'))
+    return { section: 'Floors & ceilings', group: 'Courtyard', slot: light ? 'Base' : 'Pattern' };
   if (n.includes('floor hall') || n.includes('floor family'))
     return { section: 'Floors & ceilings', group: 'Halls', slot: light ? 'Base' : 'Pattern' };
   if (n.includes('floor kitchen') || n.includes('floor wc') || n.includes('ufloor bath'))
@@ -210,11 +213,13 @@ function classicSlot(name, stage, hex){
   if (stage === 'Facade plates')  return light ? { section: 'Outside', group: 'Walls', slot: 'Colour' } : { section: 'Outside', group: 'Facade accent', slot: roleName(hex) };   // one slot per accent colour (Chinese has 3)
   if (n.includes('ceiling'))      return { section: 'Floors & ceilings', group: 'Ceilings', slot: 'Colour' };
   if (stage === 'Base') {
-    if (n.includes('forecourt')) return { section: 'Floors & ceilings', group: 'Veranda & courtyard', slot: light ? 'Base' : 'Pattern' };
+    if (n.includes('forecourt')) return { section: 'Floors & ceilings', group: 'Courtyard', slot: light ? 'Base' : 'Pattern' };
     return { section: 'Outside', group: 'Base', slot: 'Colour' };
   }
   if (stage === 'Floors') {
-    if (n.startsWith('porch') || n.includes('air-well') || n.includes('forecourt')) return { section: 'Floors & ceilings', group: 'Veranda & courtyard', slot: light ? 'Base' : 'Pattern' };
+    // the verandah STRIP at the door is the chequer, hall-coloured - it follows the Halls, not the open courtyard (his call 2026-09-05)
+    if (n.startsWith('porch')) return { section: 'Floors & ceilings', group: 'Halls', slot: light ? 'Base' : 'Pattern' };
+    if (n.includes('air-well') || n.includes('forecourt')) return { section: 'Floors & ceilings', group: 'Courtyard', slot: light ? 'Base' : 'Pattern' };
     if (n.startsWith('hall') || n.includes('family hall')) return { section: 'Floors & ceilings', group: 'Halls', slot: light ? 'Base' : 'Pattern' };
     return { section: 'Floors & ceilings', group: 'Service floors', slot: 'Colour' };   // kitchen, wc
   }
@@ -225,7 +230,10 @@ function classicSlot(name, stage, hex){
     return { locked: true };   // sect / fascia — dark roof structure, forever black
   }
   if (stage === 'Windows and doors') {
-    if (n.includes('kdoor') || n.includes('hatch') || n.includes('unit 3')) return { section: 'Outside', group: 'Doors & arches', slot: 'Colour' };   // unit 3 = the main front door
+    // the main front door is "door wall unit 3" - match it exactly, NOT any "unit 3":
+    // "upper storey unit 3" and "west flank unit 3" are WINDOWS and were wrongly
+    // following the doors (his catch 2026-09-05).
+    if (n.includes('kdoor') || n.includes('hatch') || n.includes('door wall unit 3')) return { section: 'Outside', group: 'Doors & arches', slot: 'Colour' };
     return { section: 'Outside', group: 'Windows', slot: dark ? 'Shutters' : 'Frames' };
   }
   if (stage === 'Arches and doors') return { section: 'Outside', group: 'Doors & arches', slot: 'Colour' };
@@ -329,7 +337,7 @@ async function loadModel(styleKey){
   const style = STYLES.find(s => s.key === styleKey); if (!style) return;
   if (hint) hint.textContent = 'Loading ' + style.label + '…';
   try {
-    const data = await fetch('assets/models/' + style.file).then(r => r.json());
+    const data = await fetch('assets/models/' + style.file + '?v=85').then(r => r.json());
     if (loadedStyle && loadedStyle !== styleKey) {   // remember the outgoing style's text AND colours
       storyCache[loadedStyle] = Object.assign({}, recipe.story);
       nameCache[loadedStyle] = recipe.plaque.text;
