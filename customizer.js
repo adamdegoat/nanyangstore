@@ -238,7 +238,11 @@ function classicSlot(name, stage, hex){
   }
   if (stage === 'Arches and doors') return { section: 'Outside', group: 'Doors & arches', slot: 'Colour' };
   if (stage === 'Fence and gate') {
-    if (n.includes('lattice') || (n.includes('pier plate') && !light)) return { section: 'Outside', group: 'Fence', slot: 'Lattice' };   // decorative pier panel = lattice colour
+    // the decorative pier PANEL follows the FACADE ACCENT now (his call 2026-09-05):
+    // on every house the pier colour already IS a facade accent (04 charcoal, 05 green,
+    // 06 terracotta), so this just makes them consistent - piers are a facade-family element.
+    if (n.includes('pier plate') && !light) return { section: 'Outside', group: 'Facade accent', slot: roleName(hex) };
+    if (n.includes('lattice')) return { section: 'Outside', group: 'Fence', slot: 'Lattice' };
     if (n.includes('gate') || n.includes('finial')) return { section: 'Outside', group: 'Fence', slot: 'Gate & finial' };
     return { section: 'Outside', group: 'Walls', slot: 'Colour' };   // piers, screens, side walls follow walls
   }
