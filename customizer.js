@@ -305,7 +305,7 @@ let camGoal = null, tgtGoal = null;   // smooth camera move (e.g. to the name bo
 let homeCamPos = null, homeTarget = null;   // the default framed view
 let fh = null;   // {d,h} from frameHouse, for the quick-view buttons
 let loadedStyle = null, applyingPalette = false;
-const storyCache = {}, nameCache = {};   // remember plaque text per style across switches
+const storyCache = {}, nameCache = {}, colourCache = {};   // remember plaque text AND colours per style across switches
 let signMeshes = [];       // the model's own gold sign meshes (hidden when custom text set)
 let plaqueMesh = null, plaqueTex = null, plaqueCanvas = null, plaqueCtx = null;
 let storyMeshes = [];      // original museum-board text+border (hidden when custom story set)
@@ -330,9 +330,10 @@ async function loadModel(styleKey){
   if (hint) hint.textContent = 'Loading ' + style.label + '…';
   try {
     const data = await fetch('assets/models/' + style.file).then(r => r.json());
-    if (loadedStyle && loadedStyle !== styleKey) {   // remember the outgoing style's text
+    if (loadedStyle && loadedStyle !== styleKey) {   // remember the outgoing style's text AND colours
       storyCache[loadedStyle] = Object.assign({}, recipe.story);
       nameCache[loadedStyle] = recipe.plaque.text;
+      colourCache[loadedStyle] = Object.assign({}, recipe.colours);
     }
     if (houseGroup) disposeGroup(houseGroup);
     Object.values(mats).forEach(m => m.dispose && m.dispose());
@@ -404,13 +405,21 @@ async function loadModel(styleKey){
       });
     }
     parts = [...new Set(zones.map(z => z.group))];
+    // RESTORE this style's remembered colours so switching styles never loses a buyer's
+    // edits (the "Original" theme is still their reset to defaults, since z.hex stays the default).
+    let restored = false;
+    if (colourCache[styleKey]) {
+      for (const id in colourCache[styleKey]) {
+        if (mats[id]) { recipe.colours[id] = colourCache[styleKey][id]; mats[id].color.set(colourCache[styleKey][id]); restored = true; }
+      }
+    }
     // mesh -> zone id (null = standalone / forever-black)
     var zoneIdForMesh = (name, stage, hex) => {
       if (mapper) { const r = mapper(name, stage, hex); if (!r || r.locked) return null; const z = byKey[r.section + '|' + r.group + '|' + r.slot]; return z ? z.id : null; }
       const part = partOf(name, stage, hex); if (!part) return null;
       const cl = clusterOf[part]; const z = cl && byZone[part + '|' + cl[hex]]; return z ? z.id : null;
     };
-    recipe.palette = 'original';
+    recipe.palette = restored ? null : 'original';   // restored edits = a custom design, no theme chip active
     recipe.story = storyCache[styleKey]
       ? Object.assign({}, storyCache[styleKey])
       : Object.assign({ font: recipe.story.font || 'Marcellus' }, STORY_DEFAULTS[styleKey] || {});
