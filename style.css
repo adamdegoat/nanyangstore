@@ -150,12 +150,13 @@ main{padding:0 var(--pad)}
   display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:clamp(28px,3vw,48px);align-items:start}
 .customiser .stage{background:radial-gradient(120% 100% at 50% 18%,var(--paper) 0%,var(--paper-2) 62%,#e6dcc7 100%);border:1px solid var(--line);
   aspect-ratio:4/3;height:auto;position:sticky;top:16px;align-self:start;
-  display:grid;place-items:center;text-align:center;color:var(--ink-soft)}
-.customiser .stage::after{content:"";position:absolute;inset:14px;border:1px dashed var(--line-soft);pointer-events:none}
+  display:flex;flex-direction:column;overflow:hidden;text-align:center;color:var(--ink-soft)}
+.stageview{flex:1;min-height:0;position:relative;display:grid;place-items:center}
+.customiser .stage::after{content:"";position:absolute;inset:14px;border:1px dashed var(--line-soft);pointer-events:none;z-index:1}
 .customiser .stage svg{width:40px;height:40px;opacity:.5;margin-bottom:14px}
 #stage3d::after{content:none}
-#stage3d canvas{display:block;width:100%;height:100%;cursor:grab}
-#stage3d canvas:active{cursor:grabbing}
+.stageview canvas{display:block;width:100%;height:100%;cursor:grab}
+.stageview canvas:active{cursor:grabbing}
 .options{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:26px;background:var(--line);border:1px solid var(--line)}
 .opt{background:var(--paper);padding:20px 22px;display:flex;flex-direction:column;gap:8px}
 .opt .label{color:var(--ink)}
@@ -176,12 +177,12 @@ main{padding:0 var(--pad)}
 .field-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
 .field-label{font-family:var(--text);font-style:italic;color:var(--ink-soft);font-size:13px}
 .field-count{font-family:var(--disp);font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft);opacity:.7}
-/* quick-view toolbar over the 3D stage */
-.viewbar{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:3;
-  display:flex;flex-wrap:nowrap;justify-content:center;align-items:center;gap:2px 4px;width:max-content;
-  padding:5px 8px;background:rgba(247,245,239,.86);border:1px solid var(--line);border-radius:999px;
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);max-width:calc(100% - 24px)}
-.vbtn{font-family:var(--disp);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+/* quick-view toolbar: a real top bar ABOVE the 3D view (never over the model) */
+.viewbar{order:-1;z-index:3;display:flex;flex-wrap:nowrap;align-items:center;justify-content:center;
+  gap:2px 6px;width:100%;padding:6px 10px;background:var(--paper);border-bottom:1px solid var(--line);
+  overflow-x:auto;scrollbar-width:none}
+.viewbar::-webkit-scrollbar{display:none}
+.vbtn{font-family:var(--disp);font-size:11px;letter-spacing:.09em;text-transform:uppercase;flex:0 0 auto;
   color:var(--ink-soft);background:none;border:none;border-radius:999px;padding:6px 10px;min-height:32px;cursor:pointer;white-space:nowrap}
 .vbtn:hover{color:var(--ink)}
 .vbtn[aria-pressed="true"]{color:var(--seal)}
@@ -189,19 +190,13 @@ main{padding:0 var(--pad)}
 .vsave{color:var(--seal)}
 .vbtn:focus-visible{outline:2px solid var(--seal);outline-offset:1px}
 @media(max-width:640px){
-  /* dock the view controls as a clean opaque bar at the BOTTOM of the preview,
-     so they never sit on top of the model's roof; the preview stays clear. */
-  .viewbar{top:auto;bottom:0;left:0;right:0;transform:none;width:auto;max-width:none;
-    border-radius:0;border:0;border-top:1px solid var(--line);background:var(--paper);
-    backdrop-filter:none;-webkit-backdrop-filter:none;gap:0 2px;padding:5px 6px;
-    overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;justify-content:flex-start}
-  .viewbar::-webkit-scrollbar{display:none}
-  .vbtn{font-size:10.5px;padding:8px 9px;min-height:38px;letter-spacing:.06em;flex:0 0 auto}
-  .drag-hint{display:none}   /* redundant on touch, and it overlapped the base */
+  .viewbar{justify-content:flex-start;gap:0 2px;padding:5px 6px;-webkit-overflow-scrolling:touch}
+  .vbtn{font-size:10.5px;padding:8px 9px;min-height:38px;letter-spacing:.06em}
+  .drag-hint{display:none}   /* redundant on touch */
 }
 .drag-hint{position:absolute;left:0;right:0;bottom:14px;text-align:center;pointer-events:none;
   font-family:var(--disp);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);opacity:.7;z-index:2}
-.stage-hint{display:flex;flex-direction:column;align-items:center;gap:12px}
+.stage-hint{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:2}
 .stage-hint::before{content:"";width:24px;height:24px;border:2px solid var(--line);border-top-color:var(--seal);border-radius:50%;animation:nmc-spin .8s linear infinite}
 .stage-hint.error::before{display:none}
 @keyframes nmc-spin{to{transform:rotate(360deg)}}

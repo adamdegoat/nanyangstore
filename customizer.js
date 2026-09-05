@@ -294,7 +294,7 @@ const STORY_FIELDS = [
   { key: 'madeFor',  label: 'Made for', cap: 24, ph: 'the Tan family' },
 ];
 
-let scene, camera, renderer, controls, houseGroup;
+let scene, camera, renderer, controls, houseGroup, stageView;
 let needsRender = true;   // on-demand rendering: only draw a frame when something actually changed
 function requestRender(){ needsRender = true; }
 let zones = [];            // [{id, part, hex, role, label}]
@@ -904,7 +904,10 @@ function init(){
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NoToneMapping;   // keep colours TRUE: ACES was desaturating bright reds to pink
   renderer.toneMappingExposure = 0.82;
-  mount.appendChild(renderer.domElement);
+  // the 3D canvas lives in its own wrapper BELOW the view toolbar (a flex column),
+  // so the buttons sit above the model, never on top of it.
+  stageView = document.createElement('div'); stageView.className = 'stageview';
+  mount.appendChild(stageView); stageView.appendChild(renderer.domElement);
   // STUDIO LIGHTING: the model is lit mostly by a soft all-around environment (like a photographer's
   // lightbox), with only a gentle sun for a little direction + the ground shadow. Even, clean, no glare.
   const pmrem = new THREE.PMREMGenerator(renderer);
@@ -930,12 +933,14 @@ function init(){
   addEventListener('resize', onResize);
   window.__cam = camera; window.__ctl = controls; window.__renderer = renderer; window.__scene = scene; window.__THREE = THREE; window.__house = null;
   buildViewBar(mount);
+  onResize();   // size the canvas to the view area (below the toolbar)
   animate();
   loadModel('colonial');
 }
 function onResize(){
-  const mount = document.getElementById('stage3d'); if (!mount || !renderer) return;
-  const r = mount.getBoundingClientRect();
+  if (!stageView || !renderer) return;
+  const r = stageView.getBoundingClientRect();
+  if (!r.width || !r.height) return;
   camera.aspect = r.width / r.height; camera.updateProjectionMatrix();
   renderer.setSize(r.width, r.height);
   requestRender();
