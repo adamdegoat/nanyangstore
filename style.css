@@ -177,6 +177,7 @@ main{padding:0 var(--pad)}
 .field-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
 .field-label{font-family:var(--text);font-style:italic;color:var(--ink-soft);font-size:13px}
 .field-count{font-family:var(--disp);font-size:10.5px;letter-spacing:.08em;color:var(--ink-soft);opacity:.7}
+.field-hint{font-size:11px;line-height:1.4;color:var(--ink-soft);opacity:.72;margin-top:5px}
 /* quick-view toolbar: a real top bar ABOVE the 3D view (never over the model) */
 .viewbar{order:-1;z-index:3;display:flex;flex-wrap:nowrap;align-items:center;justify-content:center;
   gap:2px 6px;width:100%;padding:6px 10px;background:var(--paper);border-bottom:1px solid var(--line);

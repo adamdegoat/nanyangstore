@@ -341,7 +341,7 @@ async function loadModel(styleKey){
   const style = STYLES.find(s => s.key === styleKey); if (!style) return;
   if (hint) hint.textContent = 'Loading ' + style.label + '…';
   try {
-    const data = await fetch('assets/models/' + style.file + '?v=103').then(r => r.json());
+    const data = await fetch('assets/models/' + style.file + '?v=104').then(r => r.json());
     if (loadedStyle && loadedStyle !== styleKey) {   // remember the outgoing style's text AND colours
       storyCache[loadedStyle] = Object.assign({}, recipe.story);
       nameCache[loadedStyle] = recipe.plaque.text;
@@ -878,17 +878,26 @@ function buildControls(){
   const nbWrap = el('div', 'field');
   const nbTop = el('div', 'field-top');
   nbTop.appendChild(el('span', 'field-label', 'Name board over the door'));
-  const nbCnt = el('span', 'field-count', `${(recipe.order.nameBoard || '').length}/${ORDER_CAPS.nameBoard}`);
+  // The board is small (~16.5 mm wide at 1:75).  It fits about 2 Chinese
+  // characters OR 6 English letters, so the limit is WIDTH-based, not a flat
+  // character count: a CJK glyph costs 3, a latin letter 1, budget 6.
+  const NB_BUDGET = 6;
+  const nbIsCJK = ch => /[㐀-鿿豈-﫿぀-ヿ]/.test(ch);
+  const nbTrim = s => { let w = 0, o = ''; for (const ch of [...(s || '')]) { const c = nbIsCJK(ch) ? 3 : 1; if (w + c > NB_BUDGET) break; w += c; o += ch; } return o; };
+  const nbCnt = el('span', 'field-count', '2 Chinese / 6 letters');
   nbTop.appendChild(nbCnt); nbWrap.appendChild(nbTop);
   const nbChips = el('div', 'chip-row nb-chips');
   const nbInput = document.createElement('input');
-  nbInput.type = 'text'; nbInput.className = 'plaque-input'; nbInput.maxLength = ORDER_CAPS.nameBoard;
-  nbInput.value = recipe.order.nameBoard || ''; nbInput.placeholder = 'Or type your own'; nbInput.setAttribute('aria-label', 'Name board text');
+  nbInput.type = 'text'; nbInput.className = 'plaque-input';
+  nbInput.value = nbTrim(recipe.order.nameBoard); recipe.order.nameBoard = nbInput.value;
+  nbInput.placeholder = 'Or type your own'; nbInput.setAttribute('aria-label', 'Name board text');
   const markNB = () => nbChips.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c.textContent === recipe.order.nameBoard ? 'true' : 'false'));
-  const setNB = v => { recipe.order.nameBoard = v; nbInput.value = v; nbCnt.textContent = `${v.length}/${ORDER_CAPS.nameBoard}`; markNB(); };
+  const setNB = v => { v = nbTrim(v); recipe.order.nameBoard = v; nbInput.value = v; markNB(); };
   NAMEBOARD_PRESETS.forEach(p => { const c = el('button', 'chip', p); c.type = 'button'; c.addEventListener('click', () => setNB(p)); nbChips.appendChild(c); });
-  nbInput.addEventListener('input', () => { recipe.order.nameBoard = nbInput.value; nbCnt.textContent = `${nbInput.value.length}/${ORDER_CAPS.nameBoard}`; markNB(); });
-  nbWrap.appendChild(nbChips); nbWrap.appendChild(nbInput); markNB();
+  nbInput.addEventListener('input', () => { const t = nbTrim(nbInput.value); if (t !== nbInput.value) nbInput.value = t; recipe.order.nameBoard = t; markNB(); });
+  nbWrap.appendChild(nbChips); nbWrap.appendChild(nbInput);
+  nbWrap.appendChild(el('div', 'field-hint', 'Keep it short and simple - it is a small board (about 2 Chinese characters, or one short word).'));
+  markNB();
   rv.appendChild(nbWrap);
   rv.appendChild(fieldRow('Subtitle', recipe.story.subtitle, 30, 'Black and white terrace', v => { recipe.story.subtitle = v; }));
   rv.appendChild(fieldRow('Year / place', recipe.story.place, 22, 'Singapore 1928', v => { recipe.story.place = v; }));
