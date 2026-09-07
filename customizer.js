@@ -48,7 +48,7 @@ function snapToBambu(hex){
   PALETTE.forEach(p => { const d = dist(c, toRGB(p.hex)); if (d < bd) { bd = d; best = p.hex; } });
   return best;
 }
-const PRICE = '$168';
+const PRICE = '';   // price left blank until he sets it (his call 2026-09-07)
 // ORDER STEP — personalisation captured at "Review & send" (engraved by hand; not previewed live)
 const ORDER_CAPS = { houseName: 22, madeFor: 24, nameBoard: 12 };
 const NAMEBOARD_PRESETS = ['平安', '福', '吉祥', '富貴', '和', '囍'];   // popular blessing boards + "type your own"
@@ -748,7 +748,7 @@ function roleSwatchRow(group){
 function buildControls(){
   const root = document.getElementById('controls'); if (!root) return;
   root.innerHTML = '';
-  root.appendChild(el('div', 'price', PRICE + ' · one price, any colours'));
+  root.appendChild(el('div', 'price', PRICE ? (PRICE + ' · one price, any colours') : 'any colours, one design'));
   // STYLE
   const sb = el('div', 'ctl-block'); sb.appendChild(el('div', 'ctl-label label', 'Style'));
   const sr = el('div', 'chip-row');
