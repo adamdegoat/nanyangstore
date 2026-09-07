@@ -56,10 +56,12 @@ const NAMEBOARD_PRESETS = ['平安', '福', '吉祥', '富貴', '和', '囍'];  
 const SEND = { whatsapp: '6583219747', paynow: '+65 8000 0000', biz: 'Nanyang Model Co.' };
 
 const STYLES = [
-  { key: 'colonial',  label: 'Colonial',  file: 'model04.json', enabled: true },
-  { key: 'chinese',   label: 'Chinese',   file: 'model05.json', enabled: true },
+  { key: 'colonial',  label: 'Colonial I',  file: 'model04.json', enabled: true },
+  { key: 'colonial2', label: 'Colonial II', file: 'model04_heritage.json', enabled: true },
   { key: 'peranakan', label: 'Peranakan', file: 'model06.json', enabled: true },
 ];
+// Chinese (The Fortune House / model05) parked 2026-09-07 - removed from the
+// picker; model05.json stays on disk for when he brings it back.
 
 // classify each real part into a customer-facing PART by what it actually is
 function isWhiteHex(hex){ return lum(hex) > 230; }
@@ -248,7 +250,7 @@ function classicSlot(name, stage, hex){
   }
   return { section: 'Outside', group: 'Walls', slot: 'Colour' };   // ground/upper storey shell
 }
-const HOUSE_MAP = { peranakan: peranakanSlot, colonial: classicSlot, chinese: classicSlot };
+const HOUSE_MAP = { peranakan: peranakanSlot, colonial: classicSlot, colonial2: classicSlot };
 const PLAQUE_FONTS = [
   { font: 'Marcellus', label: 'Classic' },
   { font: 'Georgia', label: 'Traditional' },
@@ -289,10 +291,10 @@ window.__recipe = recipe;
 const NAME_CAP = 14;   // small name board
 // pre-filled example wording per style, so buyers edit rather than start blank
 const STORY_DEFAULTS = {
-  colonial: { title: 'The Shutter House', subtitle: 'Black and white terrace', place: 'Singapore 1936',
+  colonial: { title: 'The Transitional', subtitle: 'Black and white terrace', place: 'Singapore 1936',
               story: 'A timber frame painted black,\nplaster between the posts,\nevery opening is louvred,\ndeep eaves over the street.', madeFor: 'the Leong family' },
-  chinese:  { title: 'The Fortune House', subtitle: 'Chinese fronted terrace', place: 'Singapore 1928',
-              story: 'Clouds at the shoulders,\ncoins in the spandrels,\nfret in every band,\nevery mark means luck.', madeFor: 'the Ong family' },
+  colonial2:{ title: 'The Mock Tudor', subtitle: 'Black and white terrace', place: 'Singapore 1903',
+              story: 'A timber frame painted black,\narched braces over the bays,\na king post over the centre,\ndeep eaves over the street.', madeFor: 'the Leong family' },
   peranakan:{ title: 'Peranakan Terrace', subtitle: '', place: 'Singapore 1928',
               story: 'Before the flats, Singapore was\nrows of houses like this,\nthe Peranakans built them\nand dressed the front.', madeFor: 'the Phang family' },
 };
@@ -341,7 +343,7 @@ async function loadModel(styleKey){
   const style = STYLES.find(s => s.key === styleKey); if (!style) return;
   if (hint) hint.textContent = 'Loading ' + style.label + '…';
   try {
-    const data = await fetch('assets/models/' + style.file + '?v=106').then(r => r.json());
+    const data = await fetch('assets/models/' + style.file + '?v=107').then(r => r.json());
     if (loadedStyle && loadedStyle !== styleKey) {   // remember the outgoing style's text AND colours
       storyCache[loadedStyle] = Object.assign({}, recipe.story);
       nameCache[loadedStyle] = recipe.plaque.text;
