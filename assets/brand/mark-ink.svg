@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Nanyang Model Co.">
-  <path d="M14 12 H86 Q88 12 88 14 V86 Q88 88 86 88 H14 Q12 88 12 86 V14 Q12 12 14 12 Z" fill="#A5382A"/>
-  <rect x="17.5" y="17.5" width="65" height="65" rx="2" fill="none" stroke="#F1E9DA" stroke-width="0.8" opacity=".55"/>
-  <g fill="none" stroke="#F1E9DA" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+  <rect x="6" y="6" width="88" height="88" rx="2" fill="none" stroke="#221E18" stroke-width="1.6"/>
+  <rect x="10.5" y="10.5" width="79" height="79" rx="1.5" fill="none" stroke="#221E18" stroke-width="0.7"/>
+  <g fill="none" stroke="#221E18" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
     <path d="M23 32 L50 22 L77 32"/>
     <path d="M17 32 L83 32" stroke-width="2.6"/>
     <path d="M29 29 L71 29" stroke-width="0.8"/>

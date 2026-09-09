@@ -1,7 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Nanyang Model Co.">
-  <rect x="5" y="5" width="90" height="90" rx="11" fill="#A5382A"/>
-  <g transform="translate(0,-5)" fill="none" stroke="#F1E9DA" stroke-width="6.2" stroke-linejoin="round" stroke-linecap="round">
-    <path d="M27 53 L50 35 L73 53"/><path d="M23 53 L77 53"/>
-    <path d="M39 78 L39 64 Q50 55 61 64 L61 78"/>
+  <path d="M14 12 H86 Q88 12 88 14 V86 Q88 88 86 88 H14 Q12 88 12 86 V14 Q12 12 14 12 Z" fill="#A5382A"/>
+  <g fill="none" stroke="#F1E9DA" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M25 35 L50 24 L75 35"/><path d="M21 35 L79 35" stroke-width="3.4"/>
+    <path d="M34 40 L34 52 M50 40 L50 52 M66 40 L66 52"/>
+    <path d="M21 56 L79 56" stroke-width="3.4"/>
+    <path d="M25 72 Q50 57 75 72" stroke-width="3"/>
+    <path d="M46 65 L46 73 L54 73 L54 65"/>
+    <path d="M21 77 L79 77" stroke-width="3.4"/>
   </g>
 </svg>
