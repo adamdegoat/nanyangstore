@@ -193,7 +193,10 @@ main{padding:0 var(--pad)}
 .vsave{color:var(--seal)}
 .vbtn:focus-visible{outline:2px solid var(--seal);outline-offset:1px}
 @media(max-width:640px){
-  .viewbar{justify-content:flex-start;gap:0 2px;padding:5px 6px;-webkit-overflow-scrolling:touch}
+  /* WRAP the view controls on a phone (his UX check 2026-09-09): as a nowrap
+     scroll strip, Spin and Save image sat off the right edge and needed a
+     sideways swipe most people never try. Wrapping shows all of them. */
+  .viewbar{flex-wrap:wrap;justify-content:center;gap:2px 4px;padding:5px 6px;overflow-x:visible}
   .vbtn{font-size:10.5px;padding:8px 9px;min-height:38px;letter-spacing:.06em}
   .drag-hint{display:none}   /* redundant on touch */
 }
@@ -245,6 +248,16 @@ main{padding:0 var(--pad)}
 .more-toggle{font-family:var(--disp);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
   background:none;border:none;color:var(--seal);padding:6px 0;cursor:pointer;display:block;margin-top:2px}
 .part-tabs.more{margin-top:6px}
+/* MAKE "MORE PARTS" ACTUALLY WORK (his catch 2026-09-09): .part-tabs sets
+   display:flex, which beat the browser's [hidden]{display:none}, so the inside
+   parts never collapsed and the toggle did nothing. This lets hidden win. */
+.part-tabs.more[hidden]{display:none}
+/* DESKTOP has room: show every part and drop the redundant toggle. The
+   collapse is a phone-only affordance. */
+@media(min-width:861px){
+  .part-tabs.more[hidden]{display:flex}
+  .more-toggle{display:none}
+}
 .pick-hint{font-family:var(--text);font-style:italic;color:var(--ink-soft);font-size:13px;margin:10px 0 2px}
 .zone-wrap{margin-top:8px}
 .zone-label{font-family:var(--text);font-style:italic;color:var(--ink-soft);font-size:13px;margin:12px 0 8px}
