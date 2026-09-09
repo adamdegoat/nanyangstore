@@ -210,24 +210,16 @@ function peranakanSlot(name, stage, hex){
   if (n === 'base' || n.startsWith('base ')) return { locked: true };   // base FIXED ash grey, not customer-changeable (his call 2026-09-05)
   return { section: 'Outside', group: 'Walls', slot: 'Colour' };   // everything ivory left: walls, posts, roof edge, facade base
 }
-// clearly red (the Koon Seng scarlet facade field), not pink and not brown
-function reddish(hex){ const c = toRGB(hex); return c[0] > c[1] + 40 && c[0] > c[2] + 40 && c[1] < 120; }
-// KOON SENG (No.06 ed 02): the customiser his way (2026-09-09) - the scarlet
-// facade field is the WALL/base colour (one control), and Facade accent holds
-// TWO swatches: ivory highlights + pink flowers. Everything else is exactly
-// the Peranakan mapping.
+// KOON SENG (No.06 ed 02): the customiser his way (2026-09-09, corrected) -
+// the IVORY moves WITH the walls (it is the facade base), exactly like the
+// Peranakan style. The only difference is Facade accent now holds TWO
+// swatches instead of one: the scarlet field AND the pink flowers. So this
+// is the Peranakan mapping with the pink split off into its own accent slot.
 function koonsengSlot(name, stage, hex){
   const n = (name || '').toLowerCase();
   if (n.includes('downpipe') || n.includes('poche') || n.includes('kvent')) return { locked: true };
-  const facade = stage === 'Facade plates' || n.includes('facade')
-                 || stage === 'Ground storey' || stage === 'Upper storey';
-  if (facade){
-    if (pinkish(hex)) return { section: 'Outside', group: 'Facade accent', slot: 'Flowers' };
-    if (reddish(hex)) return { section: 'Outside', group: 'Walls', slot: 'Colour' };   // scarlet field = the wall/base
-    return { section: 'Outside', group: 'Facade accent', slot: 'Highlight' };           // ivory
-  }
   if (pinkish(hex)) return { section: 'Outside', group: 'Facade accent', slot: 'Flowers' };
-  return peranakanSlot(name, stage, hex);   // roof, windows, doors, floors, fence, plaques: same as Peranakan
+  return peranakanSlot(name, stage, hex);   // ivory -> Walls, scarlet -> Facade accent, everything else as Peranakan
 }
 // COLONIAL (No.04) & the classic-structure houses. Older piece naming (stages: Windows and doors,
 // Arches and doors, Roof, Facade plates with bian'e/museum board, Fence and gate, Pipes).
