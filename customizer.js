@@ -513,10 +513,15 @@ function frameHouse(){
   const maxDim = Math.max(box.max.x - box.min.x, box.max.z - box.min.z, h);
   const fov = camera.fov * Math.PI / 180;
   const d = (maxDim / 2) / Math.tan(fov / 2) * 0.92;
-  const az = THREE.MathUtils.degToRad(40), el = THREE.MathUtils.degToRad(15);
-  camera.position.set(d*Math.cos(el)*Math.sin(az), d*Math.sin(el)+h*0.35, d*Math.cos(el)*Math.cos(az));
+  // DEFAULT VIEW = a human, eye-level angle (his call 2026-09-09): mostly the
+  // ornate front with a sliver of the west flank, dropped near street level so
+  // it reads like a house you are standing in front of, not a model seen from
+  // above. Front is az~6, side az~92, so az=24 keeps the front dominant; the
+  // low elevation and the small camera lift do the eye-level.
+  const az = THREE.MathUtils.degToRad(-24), el = THREE.MathUtils.degToRad(6);
+  camera.position.set(d*Math.cos(el)*Math.sin(az), d*Math.sin(el)+h*0.12, d*Math.cos(el)*Math.cos(az));
   controls.minDistance = d*0.4; controls.maxDistance = d*2.4;
-  controls.target.set(0, h*0.45, 0); controls.update();
+  controls.target.set(0, h*0.36, 0); controls.update();
   homeCamPos = camera.position.clone(); homeTarget = controls.target.clone();
   fh = { d, h };   // remembered so the quick-view buttons can pose the camera
 }
