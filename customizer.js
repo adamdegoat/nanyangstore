@@ -110,7 +110,7 @@ const INTERIOR_PARTS = ['Ceilings', 'Floor'];
 
 // Section + group order for the explicit per-house maps
 const SECTION_ORDER = ['Outside', 'Floors & ceilings', 'Plaques', 'Outside colours', 'Inside colours'];
-const GROUP_ORDER = ['Walls', 'Facade accent', 'Roof', 'Windows', 'Doors & arches', 'Fence', 'Base',
+const GROUP_ORDER = ['Walls', 'Facade accent', 'Ornament', 'Flowers', 'Roof', 'Windows', 'Doors & arches', 'Fence', 'Base',
   'Veranda & courtyard', 'Courtyard', 'Halls', 'Service floors', 'Upstairs rooms', 'Ceilings',
   'Name board', 'Museum plaque', 'Shop sign'];
 // COLOUR PICKERS = his real print spools (one filament per role). Each picker sets EVERY part of that
@@ -179,8 +179,12 @@ function pinkish(hex){ const c = toRGB(hex); return c[0] >= c[1] && c[0] >= c[2]
 function peranakanSlot(name, stage, hex){
   const n = (name || '').toLowerCase(), L = lum(hex), light = L > 200, dark = L < 90;
   if (n.includes('downpipe') || n.includes('poche') || n.includes('kvent')) return { locked: true };
-  // facade plates: ivory follows the walls, terracotta is the facade accent
-  if (stage === 'Facade plates') return light ? { section: 'Outside', group: 'Walls', slot: 'Colour' } : { section: 'Outside', group: 'Facade accent', slot: 'Colour' };
+  // FACADE PLATES, his call 2026-09-09 (audited): the coloured FIELD is the
+  // wall you see on the front, so it joins "Walls"; the ivory RELIEF is the
+  // ORNAMENT and gets its own control instead of being chained to the walls.
+  // ("the ornaments on it is controlled by wall" - fixed.) Two are separate
+  // print swaps on the plate, so both are freely colourable.
+  if (stage === 'Facade plates') return light ? { section: 'Outside', group: 'Ornament', slot: 'Colour' } : { section: 'Outside', group: 'Walls', slot: 'Facade' };
   if (n.includes('name board'))  return { section: 'Plaques', group: 'Name board',   slot: light ? 'Lettering' : 'Board' };   // ivory = raised lettering, dark = board base
   if (n.includes('museum'))      return { section: 'Plaques', group: 'Museum plaque', slot: light ? 'Lettering' : 'Plaque' };
   if (n.includes('sign board'))  return { section: 'Plaques', group: 'Shop sign',     slot: light ? 'Lettering' : 'Sign' };
@@ -198,17 +202,17 @@ function peranakanSlot(name, stage, hex){
   if (n.includes('roof sect'))     return { locked: true };   // dark roof section, prints with the poché — forever black
   if (n.startsWith('roof') && n.indexOf('roof', 4) !== -1 && !n.includes('upstand'))
     return { section: 'Outside', group: 'Roof', slot: 'Roof tiles' };
-  if (n.includes('eave'))   // eave valance = facade decoration: ivory follows walls, coloured band follows the facade accent
-    return light ? { section: 'Outside', group: 'Walls', slot: 'Colour' } : { section: 'Outside', group: 'Facade accent', slot: 'Colour' };
+  if (n.includes('eave'))   // eave valance = facade decoration: both the ivory relief and its coloured cornice band are Ornament
+    return light ? { section: 'Outside', group: 'Ornament', slot: 'Colour' } : { section: 'Outside', group: 'Ornament', slot: 'Cornice band' };
   if ((n.includes('win') || n.includes('transom')) && !n.includes('kvent'))
     return { section: 'Outside', group: 'Windows', slot: greenish(hex) ? 'Frames' : 'Shutters' };
   if (n.includes('idoor') || n.includes('kdoor') || n.includes('pintu') || n.includes('arch') || n.includes('hatch'))
     return { section: 'Outside', group: 'Doors & arches', slot: 'Colour' };
   if (n.includes('lattice'))       return { section: 'Outside', group: 'Fence', slot: 'Lattice' };
   if (n.includes('fence gate') || n.includes('finial')) return { section: 'Outside', group: 'Fence', slot: 'Gate & finial' };
-  if (n.includes('facade') && !light) return { section: 'Outside', group: 'Facade accent', slot: 'Colour' };
+  if (n.includes('facade') && !light) return { section: 'Outside', group: 'Walls', slot: 'Facade' };   // any coloured facade field = the front wall colour
   if (n === 'base' || n.startsWith('base ')) return { locked: true };   // base FIXED ash grey, not customer-changeable (his call 2026-09-05)
-  return { section: 'Outside', group: 'Walls', slot: 'Colour' };   // everything ivory left: walls, posts, roof edge, facade base
+  return { section: 'Outside', group: 'Walls', slot: 'Plain' };   // plain plaster left: side/rear walls, storeys, posts, roof edge
 }
 // KOON SENG (No.06 ed 02): the customiser his way (2026-09-09, corrected) -
 // the IVORY moves WITH the walls (it is the facade base), exactly like the
@@ -218,8 +222,8 @@ function peranakanSlot(name, stage, hex){
 function koonsengSlot(name, stage, hex){
   const n = (name || '').toLowerCase();
   if (n.includes('downpipe') || n.includes('poche') || n.includes('kvent')) return { locked: true };
-  if (pinkish(hex)) return { section: 'Outside', group: 'Facade accent', slot: 'Flowers' };
-  return peranakanSlot(name, stage, hex);   // ivory -> Walls, scarlet -> Facade accent, everything else as Peranakan
+  if (pinkish(hex)) return { section: 'Outside', group: 'Flowers', slot: 'Colour' };   // pink flowers get their own tab
+  return peranakanSlot(name, stage, hex);   // scarlet field -> Walls, ivory relief -> Ornament, everything else as Peranakan
 }
 // COLONIAL (No.04) & the classic-structure houses. Older piece naming (stages: Windows and doors,
 // Arches and doors, Roof, Facade plates with bian'e/museum board, Fence and gate, Pipes).
@@ -361,7 +365,7 @@ async function loadModel(styleKey){
   const style = STYLES.find(s => s.key === styleKey); if (!style) return;
   if (hint) hint.textContent = 'Loading ' + style.label + '…';
   try {
-    const data = await fetch('assets/models/' + style.file + '?v=111').then(r => r.json());
+    const data = await fetch('assets/models/' + style.file + '?v=112').then(r => r.json());
     if (loadedStyle && loadedStyle !== styleKey) {   // remember the outgoing style's text AND colours
       storyCache[loadedStyle] = Object.assign({}, recipe.story);
       nameCache[loadedStyle] = recipe.plaque.text;
