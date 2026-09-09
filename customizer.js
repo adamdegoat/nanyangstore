@@ -59,6 +59,7 @@ const STYLES = [
   { key: 'colonial',  label: 'Colonial I',  file: 'model04.json', enabled: true },
   { key: 'colonial2', label: 'Colonial II', file: 'model04_heritage.json', enabled: true },
   { key: 'peranakan', label: 'Peranakan', file: 'model06.json', enabled: true },
+  { key: 'koonseng',  label: 'Koon Seng', file: 'model06_koonseng.json', enabled: true },
 ];
 // Chinese (The Fortune House / model05) parked 2026-09-07 - removed from the
 // picker; model05.json stays on disk for when he brings it back.
@@ -250,7 +251,7 @@ function classicSlot(name, stage, hex){
   }
   return { section: 'Outside', group: 'Walls', slot: 'Colour' };   // ground/upper storey shell
 }
-const HOUSE_MAP = { peranakan: peranakanSlot, colonial: classicSlot, colonial2: classicSlot };
+const HOUSE_MAP = { peranakan: peranakanSlot, koonseng: peranakanSlot, colonial: classicSlot, colonial2: classicSlot };
 const PLAQUE_FONTS = [
   { font: 'Marcellus', label: 'Classic' },
   { font: 'Georgia', label: 'Traditional' },
@@ -297,6 +298,8 @@ const STORY_DEFAULTS = {
               story: 'A timber frame painted black,\narched braces over the bays,\na king post over the centre,\ndeep eaves over the street.', madeFor: 'the Leong family' },
   peranakan:{ title: 'Peranakan Terrace', subtitle: '', place: 'Singapore 1928',
               story: 'Before the flats, Singapore was\nrows of houses like this,\nthe Peranakans built them\nand dressed the front.', madeFor: 'the Phang family' },
+  koonseng: { title: 'Koon Seng', subtitle: 'Peranakan terrace', place: 'Singapore 1928',
+              story: 'The vivid ones on Koon Seng Road,\nflowers and festoons on the face,\nthe Peranakans built them\nand dressed the front.', madeFor: 'the Phang family' },
 };
 const STORY_MAXLINES = 4;
 const STORY_LINE_CAP = 32;   // max letters per story line, so it always fits the real plaque
