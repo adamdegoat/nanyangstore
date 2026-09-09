@@ -110,7 +110,7 @@ const INTERIOR_PARTS = ['Ceilings', 'Floor'];
 
 // Section + group order for the explicit per-house maps
 const SECTION_ORDER = ['Outside', 'Floors & ceilings', 'Plaques', 'Outside colours', 'Inside colours'];
-const GROUP_ORDER = ['Walls', 'Facade accent', 'Facade flowers', 'Roof', 'Windows', 'Doors & arches', 'Fence', 'Base',
+const GROUP_ORDER = ['Walls', 'Facade accent', 'Roof', 'Windows', 'Doors & arches', 'Fence', 'Base',
   'Veranda & courtyard', 'Courtyard', 'Halls', 'Service floors', 'Upstairs rooms', 'Ceilings',
   'Name board', 'Museum plaque', 'Shop sign'];
 // COLOUR PICKERS = his real print spools (one filament per role). Each picker sets EVERY part of that
@@ -179,10 +179,6 @@ function pinkish(hex){ const c = toRGB(hex); return c[0] >= c[1] && c[0] >= c[2]
 function peranakanSlot(name, stage, hex){
   const n = (name || '').toLowerCase(), L = lum(hex), light = L > 200, dark = L < 90;
   if (n.includes('downpipe') || n.includes('poche') || n.includes('kvent')) return { locked: true };
-  // KOON SENG's pink flowers get their OWN zone (his call 2026-09-09) - else
-  // they collapse into the scarlet facade accent and no pink shows. One
-  // "Flowers" control recolours every bloom, festoon and rosette.
-  if (pinkish(hex)) return { section: 'Outside', group: 'Facade flowers', slot: 'Colour' };
   // facade plates: ivory follows the walls, terracotta is the facade accent
   if (stage === 'Facade plates') return light ? { section: 'Outside', group: 'Walls', slot: 'Colour' } : { section: 'Outside', group: 'Facade accent', slot: 'Colour' };
   if (n.includes('name board'))  return { section: 'Plaques', group: 'Name board',   slot: light ? 'Lettering' : 'Board' };   // ivory = raised lettering, dark = board base
@@ -213,6 +209,25 @@ function peranakanSlot(name, stage, hex){
   if (n.includes('facade') && !light) return { section: 'Outside', group: 'Facade accent', slot: 'Colour' };
   if (n === 'base' || n.startsWith('base ')) return { locked: true };   // base FIXED ash grey, not customer-changeable (his call 2026-09-05)
   return { section: 'Outside', group: 'Walls', slot: 'Colour' };   // everything ivory left: walls, posts, roof edge, facade base
+}
+// clearly red (the Koon Seng scarlet facade field), not pink and not brown
+function reddish(hex){ const c = toRGB(hex); return c[0] > c[1] + 40 && c[0] > c[2] + 40 && c[1] < 120; }
+// KOON SENG (No.06 ed 02): the customiser his way (2026-09-09) - the scarlet
+// facade field is the WALL/base colour (one control), and Facade accent holds
+// TWO swatches: ivory highlights + pink flowers. Everything else is exactly
+// the Peranakan mapping.
+function koonsengSlot(name, stage, hex){
+  const n = (name || '').toLowerCase();
+  if (n.includes('downpipe') || n.includes('poche') || n.includes('kvent')) return { locked: true };
+  const facade = stage === 'Facade plates' || n.includes('facade')
+                 || stage === 'Ground storey' || stage === 'Upper storey';
+  if (facade){
+    if (pinkish(hex)) return { section: 'Outside', group: 'Facade accent', slot: 'Flowers' };
+    if (reddish(hex)) return { section: 'Outside', group: 'Walls', slot: 'Colour' };   // scarlet field = the wall/base
+    return { section: 'Outside', group: 'Facade accent', slot: 'Highlight' };           // ivory
+  }
+  if (pinkish(hex)) return { section: 'Outside', group: 'Facade accent', slot: 'Flowers' };
+  return peranakanSlot(name, stage, hex);   // roof, windows, doors, floors, fence, plaques: same as Peranakan
 }
 // COLONIAL (No.04) & the classic-structure houses. Older piece naming (stages: Windows and doors,
 // Arches and doors, Roof, Facade plates with bian'e/museum board, Fence and gate, Pipes).
@@ -259,7 +274,7 @@ function classicSlot(name, stage, hex){
   }
   return { section: 'Outside', group: 'Walls', slot: 'Colour' };   // ground/upper storey shell
 }
-const HOUSE_MAP = { peranakan: peranakanSlot, koonseng: peranakanSlot, colonial: classicSlot, colonial2: classicSlot };
+const HOUSE_MAP = { peranakan: peranakanSlot, koonseng: koonsengSlot, colonial: classicSlot, colonial2: classicSlot };
 const PLAQUE_FONTS = [
   { font: 'Marcellus', label: 'Classic' },
   { font: 'Georgia', label: 'Traditional' },
