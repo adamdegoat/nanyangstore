@@ -110,7 +110,7 @@ const INTERIOR_PARTS = ['Ceilings', 'Floor'];
 
 // Section + group order for the explicit per-house maps
 const SECTION_ORDER = ['Outside', 'Floors & ceilings', 'Plaques', 'Outside colours', 'Inside colours'];
-const GROUP_ORDER = ['Walls', 'Facade accent', 'Roof', 'Windows', 'Doors & arches', 'Fence', 'Base',
+const GROUP_ORDER = ['Walls', 'Facade accent', 'Facade flowers', 'Roof', 'Windows', 'Doors & arches', 'Fence', 'Base',
   'Veranda & courtyard', 'Courtyard', 'Halls', 'Service floors', 'Upstairs rooms', 'Ceilings',
   'Name board', 'Museum plaque', 'Shop sign'];
 // COLOUR PICKERS = his real print spools (one filament per role). Each picker sets EVERY part of that
@@ -172,9 +172,17 @@ function controlGroups(){
 // PERANAKAN (No.06) — explicit grouping locked with the maker. Each piece -> a named group + colour slot,
 // exactly matching what he prints. Returns {locked:true} for forever-black pieces (no control).
 function greenish(hex){ const c = toRGB(hex); return c[1] > c[0] + 8 && c[1] > c[2] + 8; }
+// sakura pink: red highest, blue above green, clearly not grey and not dark -
+// so the Koon Seng flowers get their OWN colour zone instead of collapsing
+// into the scarlet facade accent (his catch 2026-09-09: "no pink at all").
+function pinkish(hex){ const c = toRGB(hex); return c[0] >= c[1] && c[0] >= c[2] && c[2] > c[1] + 6 && (c[0] - c[1]) > 20 && (0.299*c[0]+0.587*c[1]+0.114*c[2]) > 130; }
 function peranakanSlot(name, stage, hex){
   const n = (name || '').toLowerCase(), L = lum(hex), light = L > 200, dark = L < 90;
   if (n.includes('downpipe') || n.includes('poche') || n.includes('kvent')) return { locked: true };
+  // KOON SENG's pink flowers get their OWN zone (his call 2026-09-09) - else
+  // they collapse into the scarlet facade accent and no pink shows. One
+  // "Flowers" control recolours every bloom, festoon and rosette.
+  if (pinkish(hex)) return { section: 'Outside', group: 'Facade flowers', slot: 'Colour' };
   // facade plates: ivory follows the walls, terracotta is the facade accent
   if (stage === 'Facade plates') return light ? { section: 'Outside', group: 'Walls', slot: 'Colour' } : { section: 'Outside', group: 'Facade accent', slot: 'Colour' };
   if (n.includes('name board'))  return { section: 'Plaques', group: 'Name board',   slot: light ? 'Lettering' : 'Board' };   // ivory = raised lettering, dark = board base
